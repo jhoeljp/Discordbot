@@ -27,10 +27,22 @@ class mmClient(discord.Client):
         em = []
         em = client.emojis
         latency =  client.latency
+        limit = 4
 
-        if "ese" == msg.content.lower():
-            await msg.channel.send("Que lo que becerro!")
+        Dict = ["Puros apatridas aca fos","Maria Corina me domina \n -Cesar M",
+        "Gorilon, malvado, gordo abusador","Viva Chavez Nojodaaa",
+        "Marico denme agua pol favol","Subule al Linkin Park ",
+        "Ledezma me lo mama","Llevo tu luz y tu aroma en mi piel",
+        "Cesar es marico oyo","Capriles principal mmgb","Te amo hyle909",
+        "La ONU es un fraude", "Hagamos un trato con el demonio",
+        "Ramos Allup es un perro flauta"]
 
+        #spit random from avail commands
+        if "ese" in msg.content.lower():
+            r = random.randint(0,len(Dict)-1)
+            await msg.channel.send(Dict[r])
+
+        #word commands
         elif "squirtle" == msg.content.lower():
             if em == []:
                 await msg.channel.send("no emojis avail")
@@ -44,9 +56,9 @@ class mmClient(discord.Client):
                 await msg.channel.send(f" lat: {latency}\n")
 
         elif "cuantos somos" == msg.content.lower():
-            await msg.channel.send(f" somos {guild.member_count } hasta ahora" + em)
+            await msg.channel.send(f" somos {guild.member_count } hasta ahora")
 
-        elif "cuantos somos online" == msg.content.lower():
+        elif "chat_online" == msg.content.lower() and msg.author.name == "hyle909":
             online = 0
             idle=0
             offline = 0
@@ -58,8 +70,7 @@ class mmClient(discord.Client):
                     idle+=1
                 if str(i.status)== "offline":
                     offline+=1
-            await msg.channel.send(f" online:{online} | idle:{idle} | offline: {offline}")
-
+            await msg.channel.send(f" online:{ online} | idle:{ idle} | offline: { offline}")
 
         elif ("muerete" in msg.content.lower()) and msg.author.name == "hyle909":
             await msg.channel.send("chao chiguire")
@@ -73,11 +84,8 @@ class mmClient(discord.Client):
             channel = msg.channel
             await channel.send('Ese link de hentai yonaikel')
 
-        # if msg.content.startswith(':eggplant'):
-        #     await msg.channel.send("fino ve")
-
         elif msg.content.startswith('flama'):
-                await msg.channel.send('mira {0.author.mention}'.format(msg) + ' flamame esta ps.')
+            await msg.channel.send('mira {0.author.mention}'.format(msg) + ' flamame esta ps.')
 
 # try:
 client = mmClient()
