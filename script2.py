@@ -8,6 +8,8 @@
 import discord
 import random
 from discord.ext import commands
+import asyncio
+import time
 
 
 description = '''Flama 1.0.2'''
@@ -15,15 +17,48 @@ token = "NTAwNzQ1MjI0NzMwMTgxNjUy.DqPT9g.wR6Tzh5zhmR8L71OXh_5esj4zp4"
 guild_id = 483848903717027862
 bot = commands.Bot(command_prefix='?', description=description)
 
+def community_report(guild):
+    online = 0
+    idle=0
+    offline = 0
+
+    for i in guild.members:
+        if str(i.status)== "online":
+            online+=1
+        if str(i.status)== "idle":
+            idle+=1
+        if str(i.status)== "offline":
+            offline+=1
+    return online, idle, offline
+
+async def user_metrics():
+    await client.wait_until_ready()
+    global guild
+    guild = client.get_guild(guild_id)
+
+    while not client.is_closed():
+
+        try:
+            online, idle, offline = community_report(guild)
+            with open("user_metrics.csv","a") as file:
+                file.write(f"{int(time.time())},{online},{offline},{idle}\n")
+            await asyncio.sleep(5)
+
+        except Exception as e:
+            print(str(e))
+            await asyncio.sleep(5)
+
 class mmClient(discord.Client):
     async def on_ready(self):
+        global guild
+
         print(self.user.name,description)
         print(self.user.id)
         print('------')
 
     async def on_message(self,msg):
+        global guild
         print(f"{msg.channel}: {msg.author.name}: {msg.content}")
-        guild = client.get_guild(guild_id)
         em = []
         em = client.emojis
         latency =  client.latency
@@ -59,17 +94,7 @@ class mmClient(discord.Client):
             await msg.channel.send(f" somos {guild.member_count } hasta ahora")
 
         elif "chat_online" == msg.content.lower() and msg.author.name == "hyle909":
-            online = 0
-            idle=0
-            offline = 0
-
-            for i in guild.members:
-                if str(i.status)== "online":
-                    online+=1
-                if str(i.status)== "idle":
-                    idle+=1
-                if str(i.status)== "offline":
-                    offline+=1
+            online, idle, offline = community_report(guild)
             await msg.channel.send(f" online:{ online} | idle:{ idle} | offline: { offline}")
 
         elif ("muerete" in msg.content.lower()) and msg.author.name == "hyle909":
@@ -89,6 +114,7 @@ class mmClient(discord.Client):
 
 # try:
 client = mmClient()
+client.loop.create_task(user_metrics())
 client.run(token)
 # @bot.event
 # async def on_ready():
