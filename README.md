@@ -6,3 +6,5 @@ to run type on command line: python/python3 script2.py.
 This file requires a Dicrod library which is an API wrapper written in python that
 makes connection and bot programmability easy.
 The library can be found on this link: https://github.com/Rapptz/discord.py
+
+Screen Shot 2019-12-14 at 2.46.48 PM
