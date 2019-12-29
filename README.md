@@ -1,10 +1,12 @@
-# Discordbot
+#Discordbot
 
-Discord Chat Bot Built on Python 3.6
-to run type on command line: python/python3 script2.py.
+Discord Chat Bot Built on Python 3.7
+To run type on command line >>>$ python/python3 base.py
 
-This file requires a Dicrod library which is an API wrapper written
-in python that makes connection and bot programmability easy.
+#Requirements:
+
+This file requires a Discord library which is an API wrapper written
+In python that makes connection and bot programmability easy.
 The library can be found on this link: https://github.com/Rapptz/discord.py
 
 Important Links:
@@ -12,3 +14,15 @@ Important Links:
 https://discordapp.com/developers/applications/
 
 https://pythonprogramming.net/discordpy-basic-bot-tutorial-introduction/
+
+#Features:
+
+Basic discord connectivity.
+Link connectivity logging.
+Enhanced chat interactivity through text base vocabulary building.
+
+
+#To Add:
+
+Spotify API music discovery and fetching.
+Browsing command for fast Youtube searching.
