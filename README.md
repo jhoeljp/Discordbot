@@ -1,7 +1,8 @@
 # Discordbot
 
 Discord Chat Bot Built on Python 3.7
-To run type on command line >>>$ python/python3 base.py
+To run type on command line the following: 
+>>>$ python/python3 base.py
 
 # Requirements:
 
@@ -27,4 +28,4 @@ Enhanced chat interactivity through text base vocabulary building. 12/29/2019
 Spotify API music discovery and fetching.
 Browsing command for fast Youtube searching.
 
-#Last Updated 12/29/2019
+# Last Updated 12/29/2019
