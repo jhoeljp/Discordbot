@@ -1,4 +1,6 @@
-#Discordbot
+#last updated 01/03/2020
+
+#Discord ChatBot
 
 Discord Chat Bot Built on Python 3.7
 To run type on command line >>>$ python/python3 base.py
@@ -21,8 +23,13 @@ Basic discord connectivity.
 Link connectivity logging.
 Enhanced chat interactivity through text base vocabulary building.
 
-
 #To Add:
 
 Spotify API music discovery and fetching.
 Browsing command for fast Youtube searching.
+
+#Spotify API
+
+https://github.com/plamere/spotipy
+
+installed through pip feature >>>$ pip3 install spotipy
