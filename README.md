@@ -4,7 +4,7 @@ Discord Chat Bot Built on Python 3.7
 
 To run type on command line the following: 
 
->>>$ python3 bot.py
+>>>$ python3 lora.py
 
 # Requirements:
 
