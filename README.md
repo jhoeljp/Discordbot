@@ -2,21 +2,22 @@
 
 Discord Chat Bot Built on Python 3.7
 
-To run type on command line the following: >>>$ python/python3 base.py
+To run type on command line the following: 
+
+>>>$ python3 bot.py
 
 # Requirements:
 
-This file requires a Discord library which is an API wrapper written
+This file requires a Discord library which is an API wrapper written 
 
-In python that makes connection and bot programmability easy.
+discord: 1.7.3
 
-The library can be found on this link: https://github.com/Rapptz/discord.py
+For asynchronous connectivity and smooth interaction aiohttp aka asynchio:
+aiohttp: 3.7.4.post0 
 
-Important Links:
+For safe connection to the Bot's discord server:
+websocket-client: 1.2.1 
 
-https://discordapp.com/developers/applications/
-
-https://pythonprogramming.net/discordpy-basic-bot-tutorial-introduction/
 
 # Features:
 
@@ -26,11 +27,12 @@ Link connectivity logging.
 
 Enhanced chat interactivity through text base vocabulary building. 12/29/2019
 
+Phrase command to add vocab and interactivity. 9/17/2021
+
 
 # To Add:
 
-Spotify API music discovery and fetching.
+24/7 Radio capabilities using youtube lib.
 
-Browsing command for fast Youtube searching.
 
-# Last Updated 12/29/2019
+# Last Updated 9/17/2021
