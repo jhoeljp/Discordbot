@@ -30,7 +30,7 @@ guild_id = 483848903717027862
 online = False
 TIMER = 0
 
-token = "NTQ1NzUxMTIzMzMyNjk0MDE2.XGX8Vw.qy1shjuY2aYB8A57kzZ5ViYz1x8"
+token = "NTQ1NzUxMTIzMzMyNjk0MDE2.XGX8Vw.Vv29mrgbB54ifaV0JkXYvIqZvcU"
 
 phrase_char = '!'
 radio_file = "Radio.csv"
@@ -163,12 +163,14 @@ class Vocab():
 class mmClient(discord.Client):
 
     async def join(self):
-        if not self.msg.channel.message.author.voice:
-            await self.msg.channel.send("{} is not connected to a voice channel".format(ctx.message.author.name))
-            return
-        else:
-            channel = self.msg.channel.message.author.voice.channel
-        await channel.connect()
+        # global self.get_channel
+        # if not self.channel.message.author.voice:
+        #     await self.channel.send("{} is not connected to a voice channel".format(self.channel.message.author.name))
+        #     return
+        # else:
+
+        channel = self.channel.message.author.voice.channel
+        await self.channel.connect()
 
 
     async def leave(self,ctx):
@@ -197,6 +199,7 @@ class mmClient(discord.Client):
         #global variables
         self.Dict = []
         global guild
+        self.channel = client.get_channel(545751123332694016)
 
         self.files_obj = Vocab(vocablo_file)
 
@@ -208,6 +211,16 @@ class mmClient(discord.Client):
         self.Dict = self.files_obj.get_vocab(vocablo_file)
         print(self.Dict)
         print("--------------------")
+
+        #find general chat channel
+        # for guild in bot.guilds:
+        for channel in guild:
+            if str(channel) == "general" :
+                # await channel.send('Bot Activated..')
+                # await channel.send(file=discord.File('add_gif_file_name_here.png'))
+                self.channel = channel
+        print('Active in {}\n Member Count : {}'.format(guild.name,guild.member_count))
+
 
 
     #triggered by new message on authoirized server
@@ -229,7 +242,8 @@ class mmClient(discord.Client):
 
         #Last message from discord server
         m = msg.content.lower()
-        self.msg = msg.channel
+        # self.channel = msg.channel
+
         #COMMANDS
 
         ##ESE##
@@ -290,18 +304,18 @@ class mmClient(discord.Client):
         elif ("radio" in msg.content.lower()) and msg.author.name == "hyle909":
             await msg.channel.send("24/7, Se prendio el bochinche ...")
 
-            try:
-                await self.join()
-                time.sleep(4)
-                music_list = self.files_obj.get_vocab(radio_file)
-                if music_list != [] : await self.play(url[0])
-                else: print("there is no music to play")
+            # try:
+            await self.join()
+            time.sleep(4)
+            music_list = self.files_obj.get_vocab(radio_file)
+            if music_list != [] : await self.play(url[0])
+            else: print("there is no music to play")
 
-                await msg.channel.send('91.4 Studio 1 FM')
-                await msg.channel.send('SAUDI ARAMCOOO')
+            await msg.channel.send('91.4 Studio 1 FM')
+            await msg.channel.send('SAUDI ARAMCOOO')
 
-            except Exception as e:
-                print("cannot join voice channel or play music ",e)
+            # except Exception as e:
+            #     print("cannot join voice channel or play music ",e)
 
 
         #shutdown
