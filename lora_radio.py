@@ -13,6 +13,8 @@
 #Resoruces:
 #https://pythonprogramming.net/discordpy-basic-bot-tutorial-introduction/
 
+#/Users/eque/opt/anaconda3/bin/python /Users/eque/Desktop/bot_lora_2021/lora_radio.py
+
 
 #Dependencies
 import discord
@@ -30,7 +32,7 @@ guild_id = 483848903717027862
 online = False
 TIMER = 0
 
-token = "NTQ1NzUxMTIzMzMyNjk0MDE2.XGX8Vw.Vv29mrgbB54ifaV0JkXYvIqZvcU"
+token = "*"
 
 phrase_char = '!'
 radio_file = "Radio.csv"
@@ -169,16 +171,17 @@ class mmClient(discord.Client):
         #     return
         # else:
 
-        channel = self.channel.message.author.voice.channel
+        # channel = self.channel.message.author.voice.channel
+        channel = self.channel.author.voice.channel
         await self.channel.connect()
 
 
-    async def leave(self,ctx):
-        voice_client = ctx.message.guild.voice_client
-        if voice_client.is_connected():
-            await voice_client.disconnect()
-        else:
-            await ctx.send("The bot is not connected to a voice channel.")
+    # async def leave(self,ctx):
+    #     voice_client = ctx.message.guild.voice_client
+    #     if voice_client.is_connected():
+    #         await voice_client.disconnect()
+    #     else:
+    #         await ctx.send("The bot is not connected to a voice channel.")
 
     # @bot.command(name='play_song', help='To play song')
     async def play(self,url):
@@ -193,13 +196,16 @@ class mmClient(discord.Client):
         except:
             await self.msg.channel.send("The bot is not connected to a voice channel.")
 
-
     #__init__
     async def on_ready(self):
         #global variables
         self.Dict = []
         global guild
-        self.channel = client.get_channel(545751123332694016)
+        #get channel
+        intents = discord.Intents().all()
+        self.channel = discord.Client(intents=intents)
+        # self.d_client = discord.Client(intents=intents)
+        # self.channel = client.get_channel(545751123332694016)
 
         self.files_obj = Vocab(vocablo_file)
 
@@ -214,12 +220,12 @@ class mmClient(discord.Client):
 
         #find general chat channel
         # for guild in bot.guilds:
-        for channel in guild:
-            if str(channel) == "general" :
-                # await channel.send('Bot Activated..')
-                # await channel.send(file=discord.File('add_gif_file_name_here.png'))
-                self.channel = channel
-        print('Active in {}\n Member Count : {}'.format(guild.name,guild.member_count))
+        # for channel in guild:
+        #     if str(channel) == "general" :
+        #         # await channel.send('Bot Activated..')
+        #         # await channel.send(file=discord.File('add_gif_file_name_here.png'))
+        #         self.channel = channel
+        # print('Active in {}\n Member Count : {}'.format(guild.name,guild.member_count))
 
 
 
@@ -401,9 +407,17 @@ try:
     # client = discord.Client(intents=intents)
     # bot = commands.Bot(command_prefix='!',intents=intents)
     print("--------------------")
+
     client = mmClient()
     client.run(token)
 
 except Exception as e:
     print(e)
     print("END!")
+
+# for guild in bot.guilds:
+#         for channel in guild.text_channels :
+#             if str(channel) == "general" :
+#                 await channel.send('Bot Activated..')
+#                 await channel.send(file=discord.File('add_gif_file_name_here.png'))
+#         print('Active in {}\n Member Count : {}'.format(guild.name,guild.member_count))
