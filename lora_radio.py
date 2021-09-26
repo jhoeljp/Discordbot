@@ -32,7 +32,7 @@ guild_id = 483848903717027862
 online = False
 TIMER = 0
 
-token = "*"
+token = "NTQ1NzUxMTIzMzMyNjk0MDE2.XGX8Vw.GZbKINsNsTWg_s1MT3b2TiEYDTI"
 
 phrase_char = '!'
 radio_file = "Radio.csv"
@@ -98,21 +98,25 @@ At end of programmed file is updated w/ new phrases only!
 #list of word from vocab
 Dict = []
 vocablo_file = "vocab.txt"
+token_file = "token.txt"
 
 class Vocab():
 
-    # def clean_up(self,crop):
-    #     print("---CLEAN UP--- \n")
-    #     tmp = []
-    #     # print(crop)
-    #
-    #     # print(crop[0])
-    #
-    #     for n in crop:
-    #         tmp.append(n)
-    #     self.clean = True
-    #     # print("--- END CLEAN UP--- \n")
-    #     return tmp
+    def __init__(self,fi):
+        self.clean = False
+        self.file = fi
+        self.Phrases = []
+        self.token = self.get_vocab(token_file)[0]
+
+        #on start load up vocabulary file
+        if(self.file_exists()):
+            self.Load()
+        else:
+            sys.exit()
+            print(str(self.fi) + " file is not on directory " + os.getcwd())
+
+    def get_token(self):
+        return str(self.token)
 
     def get_vocab(self,file_vocab):
         tmp = []
@@ -120,31 +124,18 @@ class Vocab():
         with open(file_vocab,"r") as words:
             for f in words:
                 tmp.append(f)
-
-        # if not self.clean:
-        #     tmp = self.clean_up(tmp)
         return tmp
 
     def Load(self):
         print("Loading Vocab ... ")
-        tmp = []
-
         self.Phrases = self.get_vocab(self.file)
-        # for f in self.Phrases:
-        #     print(f)
-            # print("Failed loading vocab")
 
-    def __init__(self,fi):
-        self.clean = False
-        self.file = fi
-        self.Phrases = []
-
+    def file_exists(self):
         if os.path.exists(path + "//" + str(self.file)):
-            self.Load()
+            return True
         else:
             print("File does not exist. :" + path + "\\" + str(self.file))
             sys.exit()
-
 
     def Write(self,Dictionary):
         self.Load()
@@ -212,11 +203,12 @@ class mmClient(discord.Client):
         #__init__ info
         print(self.user.name,description)
         print("--------------------")
-        print(self.user.id)
+        # print(self.user.id)
         print("--------------------")
         self.Dict = self.files_obj.get_vocab(vocablo_file)
         print(self.Dict)
         print("--------------------")
+
 
         #find general chat channel
         # for guild in bot.guilds:
@@ -227,7 +219,10 @@ class mmClient(discord.Client):
         #         self.channel = channel
         # print('Active in {}\n Member Count : {}'.format(guild.name,guild.member_count))
 
-
+    def get_bot_token(self):
+        self.bot_token = Vocab(vocablo_file).get_token()
+        print(self.bot_token)
+        return self.bot_token
 
     #triggered by new message on authoirized server
     async def on_message(self,msg):
@@ -409,7 +404,8 @@ try:
     print("--------------------")
 
     client = mmClient()
-    client.run(token)
+    bot_token = client.get_bot_token()
+    client.run(bot_token)
 
 except Exception as e:
     print(e)
