@@ -32,8 +32,6 @@ guild_id = 483848903717027862
 online = False
 TIMER = 0
 
-token = "NTQ1NzUxMTIzMzMyNjk0MDE2.XGX8Vw.GZbKINsNsTWg_s1MT3b2TiEYDTI"
-
 phrase_char = '!'
 radio_file = "Radio.csv"
 http_file = "HTTP.csv"
