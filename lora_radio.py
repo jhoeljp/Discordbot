@@ -97,9 +97,11 @@ At end of programmed file is updated w/ new phrases only!
 Dict = []
 vocablo_file = "vocab.txt"
 token_file = "token.txt"
+#discord chat roles
+chat_slave = "Valadrium"
+chat_master = "hyle909"
 
 class Vocab():
-
     def __init__(self,fi):
         self.clean = False
         self.file = fi
@@ -153,7 +155,7 @@ class Vocab():
 
 class mmClient(discord.Client):
 
-    async def join(self):
+    async def join(self,chn):
         # global self.get_channel
         # if not self.channel.message.author.voice:
         #     await self.channel.send("{} is not connected to a voice channel".format(self.channel.message.author.name))
@@ -161,7 +163,7 @@ class mmClient(discord.Client):
         # else:
 
         # channel = self.channel.message.author.voice.channel
-        channel = self.channel.author.voice.channel
+        channel = chn.author.voice.channel
         await self.channel.connect()
 
 
@@ -207,16 +209,6 @@ class mmClient(discord.Client):
         print(self.Dict)
         print("--------------------")
 
-
-        #find general chat channel
-        # for guild in bot.guilds:
-        # for channel in guild:
-        #     if str(channel) == "general" :
-        #         # await channel.send('Bot Activated..')
-        #         # await channel.send(file=discord.File('add_gif_file_name_here.png'))
-        #         self.channel = channel
-        # print('Active in {}\n Member Count : {}'.format(guild.name,guild.member_count))
-
     def get_bot_token(self):
         self.bot_token = Vocab(vocablo_file).get_token()
         print(self.bot_token)
@@ -237,7 +229,7 @@ class mmClient(discord.Client):
         http -> save all send url to local 'HTTP.csv' file
         url -> add song url to radio playlist
         '''
-        command = ["ese","help","http",'url']
+        command = ["ese","help","http",'url',"spam"]
 
         #Last message from discord server
         m = msg.content.lower()
@@ -300,11 +292,11 @@ class mmClient(discord.Client):
         ##RADIO##
         #---------------------
         #Radio __init__
-        elif ("radio" in msg.content.lower()) and msg.author.name == "hyle909":
+        elif ("radio" in msg.content.lower()) and msg.author.name == chat_master:
             await msg.channel.send("24/7, Se prendio el bochinche ...")
 
             # try:
-            await self.join()
+            await self.join(msg.channel)
             time.sleep(4)
             music_list = self.files_obj.get_vocab(radio_file)
             if music_list != [] : await self.play(url[0])
@@ -318,7 +310,7 @@ class mmClient(discord.Client):
 
 
         #shutdown
-        elif ("gg" in msg.content.lower()) and msg.author.name == "hyle909":
+        elif ("gg" in msg.content.lower()) and msg.author.name == chat_master:
             await msg.channel.send("chao chiguire")
 
             #final and only write
@@ -329,48 +321,21 @@ class mmClient(discord.Client):
             # await client.close()
             await client.close()
 
+        #conflict instigator
+        elif msg.author.name == chat_slave:
+            await msg.channel.send('yo me provoques ' + chat_slave)
+            for n in range(2):
+                r = random.randint(0,len(self.Dict)-1)
+                await msg.channel.send(self.Dict[r])
+                await asyncio.sleep(1)
 
-        #timer
-        # if(time)
+        #spam generator
+        elif command[4] in msg.content.lower():
+            for n in range(10):
+                r = random.randint(0,len(self.Dict)-1)
+                await msg.channel.send(self.Dict[r])
+                await asyncio.sleep(1)
 
-        # #store emojis
-        # elif msg.content.startswith(':'):
-            # for n in msg.content:
-                # if n == ":":
-                    # emoji.append(msg.content)
-
-        # elif msg.content.startswith("<@!545751123332694016> "):
-            # sms = msg.content.lower()
-
-            # new = sms.split('#')[1]
-
-            # await msg.channel.send(new + " \n Poemas pa ti chamita!")
-            # print("|"+ new +"|")
-
-        # elif msg.content.startswith("help"):
-            # for cmd in Help:
-                # await msg.channel.send(cmd)
-
-
-        # #spam generator
-        # elif command[1] in msg.content.lower() and msg.author.name == "hyle909":
-            # for n in range(10):
-                # r = random.randint(0,len(Dict)-1)
-                # await msg.channel.send(Dict[r])
-                # await asyncio.sleep(1)
-
-        # #save hhtp links on local .csv
-        # elif msg.content.startswith('http'):
-            # channel = msg.channel
-            # await channel.send('Ese link de hentai yonaikel')
-            # with open("HTTP.csv","a") as file:
-                # file.write(f"{str(time.ctime())} -> {str(msg.content)}\n")
-
-        # #emoji shower
-        # elif msg.content.startswith(command[2]):
-            # r = random.randint(0,len(emoji_list)-1)
-            # await msg.channel.send(emoji_list[r])
-            # await asyncio.sleep(1)
 
         # elif "latency" == msg.content.lower():
             # if latency == []:
@@ -390,24 +355,29 @@ class mmClient(discord.Client):
 
 #BOT START
 #----------------------
-try:
-    print("Connection to client ...")
-    load_dotenv()
+def main():
+    try:
+        print("Connection to client ...")
+        load_dotenv()
 
-    DISCORD_TOKEN = os.getenv("discord_token")
+        DISCORD_TOKEN = os.getenv("discord_token")
 
-    # intents = discord.Intents().all()
-    # client = discord.Client(intents=intents)
-    # bot = commands.Bot(command_prefix='!',intents=intents)
-    print("--------------------")
+        # intents = discord.Intents().all()
+        # client = discord.Client(intents=intents)
+        # bot = commands.Bot(command_prefix='!',intents=intents)
+        print("--------------------")
 
-    client = mmClient()
-    bot_token = client.get_bot_token()
-    client.run(bot_token)
+        client = mmClient()
+        bot_token = client.get_bot_token()
+        client.run(bot_token)
 
-except Exception as e:
-    print(e)
-    print("END!")
+    except Exception as e:
+        print(e)
+        print("END!")
+
+## BOF ##
+if __name__ == '__main__':
+    main()
 
 # for guild in bot.guilds:
 #         for channel in guild.text_channels :
