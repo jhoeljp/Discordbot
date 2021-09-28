@@ -49,44 +49,6 @@ source: https://medium.com/pythonland/build-a-discord-bot-in-python-that-plays-m
 import youtube_dl
 from dotenv import load_dotenv
 
-youtube_dl.utils.bug_reports_message = lambda: ''
-
-ytdl_format_options = {
-    'format': 'bestaudio/best',
-    'restrictfilenames': True,
-    'noplaylist': True,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
-}
-
-ffmpeg_options = {
-    'options': '-vn'
-}
-
-ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
-class YT_Radio(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
-        super().__init__(source, volume)
-        self.data = data
-        self.title = data.get('title')
-        self.url = ""
-
-    @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
-        loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
-        if 'entries' in data:
-            # take first item from a playlist
-            data = data['entries'][0]
-        filename = data['title'] if stream else ytdl.prepare_filename(data)
-        return filename
-
 '''
 NO class requirements
 Load vocab on vocab file
@@ -95,7 +57,7 @@ At end of programmed file is updated w/ new phrases only!
 '''
 #list of word from vocab
 Dict = []
-vocablo_file = "vocab.txt"
+vocab_file = "vocab.txt"
 token_file = "token.txt"
 #discord chat roles
 chat_slave = "Valadrium"
@@ -106,7 +68,7 @@ class Vocab():
         self.clean = False
         self.file = fi
         self.Phrases = []
-        self.token = self.get_vocab(token_file)[0]
+        self.token = self.get_file_vocab(token_file)[0]
 
         #on start load up vocabulary file
         if(self.file_exists()):
@@ -118,7 +80,7 @@ class Vocab():
     def get_token(self):
         return str(self.token)
 
-    def get_vocab(self,file_vocab):
+    def get_file_vocab(self,file_vocab):
         tmp = []
 
         with open(file_vocab,"r") as words:
@@ -127,8 +89,8 @@ class Vocab():
         return tmp
 
     def Load(self):
-        print("Loading Vocab ... ")
-        self.Phrases = self.get_vocab(self.file)
+        self.Phrases = self.get_file_vocab(self.file)
+        print("Loading %s ... "%(self.file))
 
     def file_exists(self):
         if os.path.exists(path + "//" + str(self.file)):
@@ -139,78 +101,43 @@ class Vocab():
 
     def Write(self,Dictionary):
         self.Load()
-        tmp = self.get_vocab(self.file)
+        tmp = self.get_file_vocab(self.file)
 
         if tmp == []:
             print("Phrases in Vocab is empty!")
 
         #check for repeated phrases
         for phrase in Dictionary:
-            if phrase in self.Phrases:
-                print("Phrase already in Vocab: ")
-            else:
-                print(phrase)
+            if phrase not in self.Phrases:
+            #     print("Phrase already in Vocab: ")
+            # else:
+                print("Adding %s to local dictionary "%(phrase))
                 with open(self.file,"a") as file:
                     file.write(f"{str(phrase)}\n")
 
 class mmClient(discord.Client):
 
-    async def join(self,chn):
-        # global self.get_channel
-        # if not self.channel.message.author.voice:
-        #     await self.channel.send("{} is not connected to a voice channel".format(self.channel.message.author.name))
-        #     return
-        # else:
-
-        # channel = self.channel.message.author.voice.channel
-        channel = chn.author.voice.channel
-        await self.channel.connect()
-
-
-    # async def leave(self,ctx):
-    #     voice_client = ctx.message.guild.voice_client
-    #     if voice_client.is_connected():
-    #         await voice_client.disconnect()
-    #     else:
-    #         await ctx.send("The bot is not connected to a voice channel.")
-
-    # @bot.command(name='play_song', help='To play song')
-    async def play(self,url):
-        try :
-            server = self.msg.channel.message.guild
-            voice_channel = server.voice_client
-
-            async with self.msg.channel.typing():
-                filename = await YTDLSource.from_url(url, loop=bot.loop)
-                voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
-            await self.msg.channel.send('**Now playing:** {}'.format(filename))
-        except:
-            await self.msg.channel.send("The bot is not connected to a voice channel.")
-
     #__init__
     async def on_ready(self):
+        #define chat client
+        self.bot_client = discord.Client
         #global variables
         self.Dict = []
         global guild
-        #get channel
-        intents = discord.Intents().all()
-        self.channel = discord.Client(intents=intents)
-        # self.d_client = discord.Client(intents=intents)
-        # self.channel = client.get_channel(545751123332694016)
-
-        self.files_obj = Vocab(vocablo_file)
+        #vocab file object
+        self.files_obj = Vocab(vocab_file)
 
         #__init__ info
         print(self.user.name,description)
         print("--------------------")
         # print(self.user.id)
         print("--------------------")
-        self.Dict = self.files_obj.get_vocab(vocablo_file)
+        self.Dict = self.files_obj.get_file_vocab(vocab_file)
         print(self.Dict)
         print("--------------------")
 
     def get_bot_token(self):
-        self.bot_token = Vocab(vocablo_file).get_token()
+        self.bot_token = Vocab(vocab_file).get_token()
         print(self.bot_token)
         return self.bot_token
 
@@ -233,7 +160,6 @@ class mmClient(discord.Client):
 
         #Last message from discord server
         m = msg.content.lower()
-        # self.channel = msg.channel
 
         #COMMANDS
 
@@ -257,6 +183,7 @@ class mmClient(discord.Client):
             await msg.channel.send("Teach me new phrases using '" + phrase_char + " + Phrase'" )
             await msg.channel.send("Add new song to radio using '" + phrase_char + "url + your_url" )
             await msg.channel.send("Add new link to server file using '" + phrase_char + "https + your_url" )
+            await msg.channel.send("Spam phrases on chat using th word 'spam' " )
             # print("Last updated " + os.path.getmtime("\\bot.py"))
 
         ##HTTP##
@@ -298,7 +225,7 @@ class mmClient(discord.Client):
             # try:
             await self.join(msg.channel)
             time.sleep(4)
-            music_list = self.files_obj.get_vocab(radio_file)
+            music_list = self.files_obj.get_file_vocab(radio_file)
             if music_list != [] : await self.play(url[0])
             else: print("there is no music to play")
 
@@ -319,7 +246,7 @@ class mmClient(discord.Client):
 
             #close client connection
             # await client.close()
-            await client.close()
+            await self.bot_client.close(self)
 
         #conflict instigator
         elif msg.author.name == chat_slave:
@@ -358,13 +285,6 @@ class mmClient(discord.Client):
 def main():
     try:
         print("Connection to client ...")
-        load_dotenv()
-
-        DISCORD_TOKEN = os.getenv("discord_token")
-
-        # intents = discord.Intents().all()
-        # client = discord.Client(intents=intents)
-        # bot = commands.Bot(command_prefix='!',intents=intents)
         print("--------------------")
 
         client = mmClient()
@@ -378,10 +298,3 @@ def main():
 ## BOF ##
 if __name__ == '__main__':
     main()
-
-# for guild in bot.guilds:
-#         for channel in guild.text_channels :
-#             if str(channel) == "general" :
-#                 await channel.send('Bot Activated..')
-#                 await channel.send(file=discord.File('add_gif_file_name_here.png'))
-#         print('Active in {}\n Member Count : {}'.format(guild.name,guild.member_count))
